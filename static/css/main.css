@@ -127,10 +127,10 @@ form {
 }
 
 #contSU {
-    height: 584px;
+    height: 780px;
 }
 #contFP {
-    height: 440px;
+    height: 480px;
 }
 #contOTP {
     height: 400px;
@@ -149,4 +149,9 @@ form {
     border-radius: 10px;
     font-weight: 400;
     user-select: none;
+}
+
+small {
+    width: 310px;
+    color: #4b4b4b;
 }

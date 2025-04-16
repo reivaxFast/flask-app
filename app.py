@@ -54,7 +54,7 @@ class Homes(db.Model):
     home_name = db.Column(db.String(200), nullable=False)
     home_description = db.Column(db.String(1000), nullable=True)
     join_by_link = db.Column(db.Boolean, default=False)
-    home_password = db.Column(db.String(20), nullable=True)
+    home_password = db.Column(db.String(200), nullable=True)
     background_photo = db.Column(db.LargeBinary, nullable=True)
     tasks = db.relationship('SetTasks', backref='home', lazy=True)
     users = db.relationship('UserInHome', backref='home', lazy=True)
@@ -178,14 +178,12 @@ def logout():
 
 @app.route('/update_password', methods=['GET', 'POST'])
 def update_password():
-    if 'username' not in session:
-        return redirect(url_for('login'))
     if request.method == 'POST':
         password = request.form['password']
         user = User.query.filter_by(username=session['username']).first()
         user.update_password(password)
         return redirect(url_for('home'))
-    return render_template('forgot_password.html')
+    return render_template('update_password.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

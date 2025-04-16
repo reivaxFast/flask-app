@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-    <title>Home Page</title>
+    <title>House Org - Login</title>
 {% endblock %}
 
 {% block body %}
@@ -12,10 +12,10 @@
         <form action="{{ url_for('login') }}" method="post">
             <input type="email" class="input" name="" id="SignInEmail" placeholder="Email" required>
             <input type="password" class="input" name="" id="SignInPassword" placeholder="Password" required>
-            <input type="submit" value="Sign In" class="button" id="SignInButton" onclick="">
+            <input type="submit" value="Login" class="button" id="SignInButton" onclick="">
         </form>
-        <a href="signUp.html" id="CreateLink" class="link">Create Account</a>
-        <a href="forgotPassword.html" id="ResetLink" class="link">Reset Password</a>
+        <a href="{{ url_for('register') }}" id="CreateLink" class="link">Register</a>
+        <a href="{{ url_for('update_password') }}" id="ResetLink" class="link">Update Password</a>
     </div>
     <script src="{{ url_for('static', filename='js/signIn.js') }}"></script>
 {% endblock %}

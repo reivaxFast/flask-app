@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>House Org - Register</title>
+{% endblock %}
+
+{% block body %}
+    <canvas id="background" class="background"></canvas>
+    <div id="contSU" class="cont"></div>
+    <div id="signIn">
+        <h1 id="Title" class="Title">Register</h1>
+        <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
+        <form action="{{ url_for('register') }}" method="post">
+            <input type="email" class="input" name="" id="SignInEmail" placeholder="Email" required>
+            <input type="text" class="input" name="" id="SignInEmail" placeholder="Display Name (what your seen as)" required>
+            <input type="text" class="input" name="" id="SignInEmail" placeholder="Username (unique to you)" required>
+            <small>Date of Birth (for birthday reminders):</small>
+            <input type="date" class="input" name="" id="SignInEmail" placeholder="Date of Birth (for birthday reminders)" required>
+            <input type="password" class="input" name="" id="SignInPassword" placeholder="Password" required>
+            <input type="confirmPassword" class="input" name="" id="SignInPassword" placeholder="Confirm Password" required>
+            <input type="submit" value="Register" class="button" id="SignInButton" onclick="">
+        </form>
+        <a href="{{ url_for('login') }}" id="SignLink" class="link">Login</a>
+    </div>
+    <script src="{{ url_for('static', filename='js/signUp.js') }}"></script>
+{% endblock %}
