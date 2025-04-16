@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Home Page</title>
+{% endblock %}
+
+{% block body %}
+    <canvas id="background" class="background"></canvas>
+    <div id="contSI" class="cont"></div>
+    <div id="signIn">
+        <h1 id="Title" class="Title">Sign In</h1>
+        <h2 id="Subtitle" class="Subtitle">You've been missed</h2>
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="email" class="input" name="" id="SignInEmail" placeholder="Email" required>
+            <input type="password" class="input" name="" id="SignInPassword" placeholder="Password" required>
+            <input type="submit" value="Sign In" class="button" id="SignInButton" onclick="">
+        </form>
+        <a href="signUp.html" id="CreateLink" class="link">Create Account</a>
+        <a href="forgotPassword.html" id="ResetLink" class="link">Reset Password</a>
+    </div>
+    <script src="{{ url_for('static', filename='js/signIn.js') }}"></script>
+{% endblock %}

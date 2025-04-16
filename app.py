@@ -155,7 +155,37 @@ class EventPhotos(db.Model):
 def home():
     if 'username' in session:
         return render_template('home.html', username=session['username'])
-    return render_template('login.html')
+    return redirect(url_for('login'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        display_name = request.form['display_name']
+        password = request.form['password']
+        hashed_password = generate_password_hash(password, method='sha256')
+        new_user = User(email=email, username=username, display_name=display_name, password_hash=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
+
+@app.route('/update_password', methods=['GET', 'POST'])
+def update_password():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        password = request.form['password']
+        user = User.query.filter_by(username=session['username']).first()
+        user.update_password(password)
+        return redirect(url_for('home'))
+    return render_template('forgot_password.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
