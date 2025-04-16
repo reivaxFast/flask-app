@@ -10,13 +10,12 @@
         <h1 id="Title" class="Title">Register</h1>
         <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
         <form action="{{ url_for('register') }}" method="post">
-            <input type="email" class="input" name="" id="SignInEmail" placeholder="Email" required>
-            <input type="text" class="input" name="" id="SignInEmail" placeholder="Display Name (what your seen as)" required>
-            <input type="text" class="input" name="" id="SignInEmail" placeholder="Username (unique to you)" required>
+            <input type="email" class="input" name="email" id="SignInEmail" placeholder="Email" required>
+            <input type="text" class="input" name="username" id="SignInUsername" placeholder="Username" required>
             <small>Date of Birth (for birthday reminders):</small>
-            <input type="date" class="input" name="" id="SignInEmail" placeholder="Date of Birth (for birthday reminders)" required>
-            <input type="password" class="input" name="" id="SignInPassword" placeholder="Password" required>
-            <input type="confirmPassword" class="input" name="" id="SignInPassword" placeholder="Confirm Password" required>
+            <input type="date" class="input" name="DOB" id="SignInDOB" placeholder="Date of Birth (for birthday reminders)" required>
+            <input type="password" class="input" name="password1" id="SignInPassword" placeholder="Password" required>
+            <input type="confirmPassword" class="input" name="password2" id="SignInPassword" placeholder="Confirm Password" required>
             <input type="submit" value="Register" class="button" id="SignInButton" onclick="">
         </form>
         <a href="{{ url_for('login') }}" id="SignLink" class="link">Login</a>

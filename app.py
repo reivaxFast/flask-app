@@ -12,8 +12,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    display_name = db.Column(db.String(150), nullable=False)
+    username = db.Column(db.String(150), nullable=False)
     DOB = db.Column(db.Date, nullable=True)
     password_hash = db.Column(db.String(150), nullable=False)
     
@@ -153,8 +152,8 @@ class EventPhotos(db.Model):
 
 @app.route('/')
 def home():
-    if 'username' in session:
-        return render_template('home.html', username=session['username'])
+    if 'email' in session:
+        return render_template('home.html', email=session['email'])
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -162,10 +161,10 @@ def register():
     if request.method == 'POST':
         email = request.form['email']
         username = request.form['username']
-        display_name = request.form['display_name']
         password = request.form['password']
+        dob = request.form['DOB']
         hashed_password = generate_password_hash(password, method='sha256')
-        new_user = User(email=email, username=username, display_name=display_name, password_hash=hashed_password)
+        new_user = User(email=email, DOB = dob, username=username, password_hash=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -173,14 +172,14 @@ def register():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('email', None)
     return redirect(url_for('home'))
 
 @app.route('/update_password', methods=['GET', 'POST'])
 def update_password():
     if request.method == 'POST':
         password = request.form['password']
-        user = User.query.filter_by(username=session['username']).first()
+        user = User.query.filter_by(email=session['email']).first()
         user.update_password(password)
         return redirect(url_for('home'))
     return render_template('update_password.html')
@@ -192,7 +191,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
-            session['username'] = user.username
+            session['email'] = user.email
             return redirect(url_for('home'))
         else:
             return "Invalid credentials"
