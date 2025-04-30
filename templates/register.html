@@ -6,7 +6,16 @@
 {% block body %}
     <canvas id="background" class="background"></canvas>
     <div id="contSU" class="cont"></div>
+    <style>
+        #error {
+            display: {{ disp }};
+            color: red;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
     <div id="signIn">
+        <p id='error'>{{ error }}</p>
         <h1 id="Title" class="Title">Register</h1>
         <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
         <form action="{{ url_for('register') }}" method="post">
@@ -15,7 +24,7 @@
             <small>Date of Birth (for birthday reminders):</small>
             <input type="date" class="input" name="DOB" id="SignInDOB" placeholder="Date of Birth (for birthday reminders)" required>
             <input type="password" class="input" name="password1" id="SignInPassword" placeholder="Password" required>
-            <input type="confirmPassword" class="input" name="password2" id="SignInPassword" placeholder="Confirm Password" required>
+            <input type="password" class="input" name="password2" id="SignInPassword2" placeholder="Confirm Password" required>
             <input type="submit" value="Register" class="button" id="SignInButton" onclick="">
         </form>
         <a href="{{ url_for('login') }}" id="SignLink" class="link">Login</a>
