@@ -6,25 +6,26 @@
 {% block body %}
     <canvas id="background" class="background"></canvas>
     <div id="contSU" class="cont"></div>
-    <style>
-        #error {
-            display: {{ disp }};
-            color: red;
-            font-size: 1.2em;
-            text-align: center;
-        }
-    </style>
     <div id="signIn">
-        <p id='error'>{{ error }}</p>
         <h1 id="Title" class="Title">Register</h1>
         <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
         <form action="{{ url_for('register') }}" method="post">
+            <p id='error' class='error' style="display: {{ 'block' if problem == 'email' else 'none'}}">{{ error }}</p>
             <input type="email" class="input" name="email" id="SignInEmail" placeholder="Email" required>
+            <p id='error' class='error' style="display: {{ 'block' if problem == 'username' else 'none'}}">{{ error }}</p>
             <input type="text" class="input" name="username" id="SignInUsername" placeholder="Username" required>
+            <p id='error' class='error' style="display: {{ 'block' if problem == 'dob' else 'none'}}">{{ error }}</p>
             <small>Date of Birth (for birthday reminders):</small>
             <input type="date" class="input" name="DOB" id="SignInDOB" placeholder="Date of Birth (for birthday reminders)" required>
-            <input type="password" class="input" name="password1" id="SignInPassword" placeholder="Password" required>
-            <input type="password" class="input" name="password2" id="SignInPassword2" placeholder="Confirm Password" required>
+            <p id='error' class='error' style="display: {{ 'block' if problem == 'password' else 'none'}}">{{ error }}</p>
+            <div class="password-container">
+                <input type="password" class="password" name="password1" id="password1" placeholder="Password" required>
+                <i class="fa-regular fa-eye fa-lg eye-icon" id="eye-password1"></i>
+            </div>
+            <div class="password-container">
+                <input type="password" class="password" name="password2" id="password2" placeholder="Confirm Password" required>
+                <i class="fa-regular fa-eye fa-lg eye-icon" id="eye-password2"></i>
+            </div>
             <input type="submit" value="Register" class="button" id="SignInButton" onclick="">
         </form>
         <a href="{{ url_for('login') }}" id="SignLink" class="link">Login</a>

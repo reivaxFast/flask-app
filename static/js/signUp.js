@@ -17,3 +17,20 @@ for (let i = 2; i < 8; i++) {
 function signUp() {
     location.href = "otp.html";
 }
+
+const password1 = document.getElementById('password1');
+const password2 = document.getElementById('password2');
+const togglePassword1 = document.getElementById('eye-password1');
+const togglePassword2 = document.getElementById('eye-password2');
+togglePassword1.addEventListener('click', function () {
+    const type = password1.getAttribute('type') === 'password' ? 'text' : 'password';
+    password1.setAttribute('type', type);
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+});
+togglePassword2.addEventListener('click', function () {
+    const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+    password2.setAttribute('type', type);
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+});

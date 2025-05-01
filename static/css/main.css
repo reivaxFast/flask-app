@@ -26,15 +26,28 @@ body {
     margin-bottom: 10px;
     border: none;
     background-color: #F1F4FF;
-    color: #4b4b4b;
+    color: #757575;
     font-size: 16px;
     border-radius: 10px;
     font-weight: 400;
     user-select: none;
 }
-
 .input:focus {
     outline: #1F41BB solid 2px;
+}
+.password{
+    width: 260px;
+    height: 24px;
+    padding: 20px;
+    margin-bottom: 10px;
+    border: none;
+    background: none;
+    outline: none;
+    color: #757575;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 10px;
+    user-select: none;
 }
 
 .button {
@@ -65,7 +78,7 @@ body {
 .link {
     margin-bottom: 20px;
     font-size: 14px;
-    color: #494949;
+    color: #757575;
     font-weight: 600;
     text-decoration: none;
     user-select: none;
@@ -154,4 +167,36 @@ form {
 small {
     width: 310px;
     color: #4b4b4b;
+}
+
+.error {
+    width: 310px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 14px;
+    color: red;
+    font-weight: 600;
+    user-select: none;
+}
+.eye-icon {
+    height: 100%;
+    transform: translateX(calc(-50% + 15px));
+    color: #757575;
+    cursor: pointer;
+}
+.password-container {
+    width: 350px;
+    height: 64px;
+    padding: 0px;
+    margin-bottom: 10px;
+    border: none;
+    background-color: #F1F4FF;
+    color: #757575;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: 400;
+    user-select: none;
+}
+.password-container:focus-within {
+    outline: #1F41BB solid 2px;
 }

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>House Org - OTP</title>
+{% endblock %}
+
+{% block body %}
+<canvas id="background" class="background"></canvas>
+<div id="contOTP" class="cont"></div>
+<div id="signIn">
+    <h1 id="Title" class="Title">Enter OTP</h1>
+    <h2 id="Subtitle" class="Subtitle">Check your inbox!</h2>
+    <form action="{{ url_for('otp') }}" method="post">
+        <div id="otpContainer" class="otpContainer">
+            <input type="text" class="otp"  name="otp1" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')" placeholder="" required>
+            <input type="text" class="otp"  name="otp2" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')" placeholder="" required>
+            <input type="text" class="otp"  name="otp3" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')" placeholder="" required>
+            <input type="text" class="otp"  name="otp4" maxlength="1" id="otp4" oninput="moveToNext(this, 'otp5')" placeholder="" required>
+            <input type="text" class="otp"  name="otp5" maxlength="1" id="otp5" oninput="moveToNext(this, 'otp6')" placeholder="" required>
+            <input type="text" class="otp"  name="otp6" maxlength="1" id="otp6"  placeholder="" required>
+        </div>
+        <input type="submit" value="Confirm OTP" class="button" id="SignInButton">
+    </form>
+</div>
+<script src="otp.js"></script>
+
+{% endblock  %}
