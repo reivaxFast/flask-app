@@ -1,15 +1,16 @@
 import sys
-from databases import *
 from builtins import *
 from flask import Flask
-from flask_mail import Mail
 from flask_migrate import Migrate
-from routes import auth_bp
+from extensions import db, mail  # Import from extensions
+from routes import auth_bp  # Import the blueprint
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+
 db.init_app(app)
+mail.init_app(app)
 migrate = Migrate(app, db)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -20,9 +21,9 @@ app.config['MAIL_USERNAME'] = 'xjehoward@gmail.com'
 app.config['MAIL_PASSWORD'] = 'lqkq vhzz cppx uzcd'
 app.config['MAIL_DEFAULT_SENDER'] = 'xjehoward@gmail.com'
 
-mail = Mail(app)
+app.register_blueprint(auth_bp, url_prefix='/')  # Register the blueprint
 
-app.register_blueprint(auth_bp)
+from databases import *
 
 def empty_table(model):
     try:

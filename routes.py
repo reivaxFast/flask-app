@@ -2,8 +2,8 @@ from flask import render_template, request, redirect, url_for, session, Blueprin
 from flask_mail import Message
 from datetime import datetime, timedelta
 import re
-from .databases import User, otp  # Assuming models are in the same directory or a subdirectory
-from . import db, mail, app 
+from databases import User, otp  # Assuming models are in the same directory or a subdirectory
+from extensions import db, mail  # Import from extensions
 from werkzeug.security import generate_password_hash
 import secrets
 import string
@@ -15,7 +15,7 @@ def generate_otp(length=6):
     otp = ''.join(secrets.choice(alphabet) for i in range(length))
     return otp
 
-@app.route('/')
+@auth_bp.route('/')
 def home():
     if 'email' in session:
         user = User.query.filter_by(email=session['email']).first()
@@ -24,9 +24,9 @@ def home():
                 return render_template('home.html', email=session['email'])
             else:
                 return render_template('otp.html', email=session['email'])
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
 
-@app.route('/register', methods=['GET', 'POST'])
+@auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         email = request.form['email']
@@ -83,11 +83,11 @@ def register():
         except Exception as e:
             print(e)
             print(f'otp: {otp_code}')
-        return redirect(url_for('otp_route'))
+        return redirect(url_for('auth.otp_route'))
         
     return render_template('register.html', error=None, problem = None)
 
-@app.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -95,14 +95,12 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             session['email'] = user.email
-            return redirect(url_for('home'))
+            return redirect(url_for('auth.home'))
         else:
             return "Invalid credentials"
     return render_template('login.html')
 
-
-
-@app.route('/otp', methods=['GET', 'POST'])
+@auth_bp.route('/otp', methods=['GET', 'POST'])
 def otp_route():
     if request.method == 'POST':
         email = session['email']
@@ -124,7 +122,7 @@ def otp_route():
                     user.email_verified = True
                     db.session.delete(otp_class)
                     db.session.commit()
-                    return redirect(url_for('home'))
+                    return redirect(url_for('auth.home'))
                 else:
                     return render_template('otp.html', error="Invalid OTP", email=email)
             else:
@@ -132,7 +130,7 @@ def otp_route():
                         
     return render_template('otp.html')
 
-@app.route('/resend_otp', methods=['POST'])
+@auth_bp.route('/resend_otp', methods=['POST'])
 def resend_otp():
     email = session['email']
     user = User.query.filter_by(email=email).first()
@@ -140,7 +138,7 @@ def resend_otp():
         otp_class = otp.query.filter_by(user_id=user.id).order_by(otp.expires_at.desc()).first()
         if otp_class:
             if otp_class.sent_at > datetime.utcnow() + timedelta(minutes=1):
-                return redirect(url_for('otp_route'))
+                return redirect(url_for('auth.otp_route'))
             db.session.delete(otp_class)
             db.session.commit()
             otp_code = generate_otp()
@@ -160,9 +158,9 @@ def resend_otp():
         except Exception as e:
             print(e)
             print(f'otp: {otp_code}')
-    return redirect(url_for('otp_route'))
+    return redirect(url_for('auth.otp_route'))
 
-@app.route('/reset_password', methods=['GET', 'POST'])
+@auth_bp.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'POST':
         email = request.form['email']
@@ -193,10 +191,10 @@ def reset_password():
             except Exception as e:
                 print(e)
                 print(f'otp: {otp_code}')
-        return redirect(url_for('otp_route'))
+        return redirect(url_for('auth.otp_route'))
     return render_template('update_password.html')
 
-@app.route('/logout', methods = ['POST'])
+@auth_bp.route('/logout', methods = ['POST'])
 def logout():
     session.pop('email', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
