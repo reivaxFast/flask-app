@@ -9,7 +9,10 @@
 <div id="signIn">
     <h1 id="Title" class="Title">Enter OTP</h1>
     <h2 id="Subtitle" class="Subtitle">Check your inbox!</h2>
-    <form action="{{ url_for('otp') }}" method="post">
+    <form action="{{ url_for('resend_otp') }}" method="post">
+        <input type="submit" value="Resend OTP" class="button" id="SignInButton" >
+    </form>
+    <form action="{{ url_for('otp_route') }}" method="post">
         <div id="otpContainer" class="otpContainer">
             <input type="text" class="otp"  name="otp1" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')" placeholder="" required>
             <input type="text" class="otp"  name="otp2" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')" placeholder="" required>

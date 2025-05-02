@@ -21,7 +21,7 @@ class User(db.Model):
     file_uploader = db.relationship('files', backref='uploader', lazy=True)
     f_creator = db.relationship('pinboard_items', backref='creator', lazy=True)
     tasks_creator = db.relationship('set_tasks', backref='creator', lazy=True, foreign_keys='set_tasks.set_id')
-    otp = db.relationship('OTP', backref='user', lazy=True)
+    otp = db.relationship('otp', backref='user', lazy=True)
     
     def update_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -150,6 +150,7 @@ class otp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     otp_code = db.Column(db.String(6), nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=False)
 
     def is_valid(self):
