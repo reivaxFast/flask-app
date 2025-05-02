@@ -15,7 +15,7 @@
             <input type="submit" value="Login" class="button" id="SignInButton" onclick="">
         </form>
         <a href="{{ url_for('register') }}" id="CreateLink" class="link">Register</a>
-        <a href="{{ url_for('register') }}" id="ResetLink" class="link">Update Password</a>
+        <a href="{{ url_for('reset_password') }}" id="ResetLink" class="link">Update Password</a>
     </div>
     <script src="{{ url_for('static', filename='js/signIn.js') }}"></script>
 {% endblock %}
