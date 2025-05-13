@@ -1,4 +1,4 @@
-import sys
+import sys, inspect
 from builtins import *
 from flask import Flask
 from flask_migrate import Migrate
@@ -23,8 +23,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'xjehoward@gmail.com'
 
 app.register_blueprint(auth_bp, url_prefix='/')  # Register the blueprint
 
-from databases import *
-
+import databases
 def empty_table(model):
     try:
         num_rows_deleted = db.session.query(model).delete()
@@ -39,8 +38,36 @@ if __name__ == '__main__':
         match sys.argv[1]:
             case 'clear':
                 with app.app_context():
-                    print(empty_table(User))
-                    print(empty_table(otp))
+                    module_name = databases.__name__
+
+                    defined_classes = [
+                        obj for name, obj in inspect.getmembers(databases, inspect.isclass)
+                        if obj.__module__ == module_name
+                    ]
+
+                    for i in defined_classes:
+                        if i.__name__ != 'db':
+                            print(empty_table(i))
+                    print("All tables cleared.")
+            case 'migrate':
+                with app.app_context():
+                    from flask_migrate import upgrade
+                    upgrade()
+                    print("Database migrated.")
+            case 'clear_run':
+                with app.app_context():
+                    module_name = databases.__name__
+
+                    defined_classes = [
+                        obj for name, obj in inspect.getmembers(databases, inspect.isclass)
+                        if obj.__module__ == module_name
+                    ]
+
+                    for i in defined_classes:
+                        if i.__name__ != 'db':
+                            print(empty_table(i))
+                    print("All tables cleared.")
+                app.run(debug=True)
             case 'run':
                 app.run(debug=True)
     except:

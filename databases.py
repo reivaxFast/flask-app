@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from time import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
 
@@ -33,7 +33,7 @@ class set_tasks(db.Model):
     home_id = db.Column(db.Integer, db.ForeignKey('homes.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     task_name = db.Column(db.String(200), nullable=False)
-    date_set = db.Column(db.DateTime, default=datetime.utcnow)
+    date_set = db.Column(db.DateTime, default=time())
     date_due = db.Column(db.DateTime, nullable=True)
     description = db.Column(db.String(1000), nullable=True)
     set_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -70,7 +70,7 @@ class rotas(db.Model):
     home_id = db.Column(db.Integer, db.ForeignKey('homes.id'), nullable=False)
     rota_name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(1000), nullable=True)
-    last_changed = db.Column(db.DateTime, default=datetime.utcnow)
+    last_changed = db.Column(db.DateTime, default=time())
     set_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     pointer = db.Column(db.Integer, nullable=True)
     size = db.Column(db.Integer, nullable=True)
@@ -100,7 +100,7 @@ class photos(db.Model):
     home_id = db.Column(db.Integer, db.ForeignKey('homes.id'), nullable=False)
     uploader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     photo = db.Column(db.LargeBinary, nullable=False)
-    date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
+    date_uploaded = db.Column(db.DateTime, default=time())
     event = db.relationship('event_photos', backref='photo', lazy=True)
 
 class pinboard(db.Model):
@@ -130,7 +130,7 @@ class files(db.Model):
     home_id = db.Column(db.Integer, db.ForeignKey('homes.id'), nullable=False)
     uploader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     file = db.Column(db.LargeBinary, nullable=False)
-    date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
+    date_uploaded = db.Column(db.DateTime, default=time())
 
 class event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -149,8 +149,8 @@ class otp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     otp_code = db.Column(db.String(6), nullable=False)
-    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    sent_at = db.Column(db.DateTime, default=time())
     expires_at = db.Column(db.DateTime, nullable=False)
 
     def is_valid(self):
-        return datetime.utcnow() < self.expires_at
+        return time()() < self.expires_at

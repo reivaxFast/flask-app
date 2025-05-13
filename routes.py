@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, Blueprint
 from flask_mail import Message
-from datetime import datetime, timedelta
+from time import time
+from datetime import datetime
 import re
 from databases import User, otp  # Assuming models are in the same directory or a subdirectory
 from extensions import db, mail  # Import from extensions
@@ -66,8 +67,8 @@ def register():
         
         user = User.query.filter_by(email=email).first()
         otp_code = generate_otp()
-        expires_at = datetime.utcnow() + timedelta(minutes=10)
-        new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at = datetime.utcnow(), expires_at=expires_at)
+        expires_at = time() + 600
+        new_otp = otp(user_id=user.id, otp_code=otp_code, expires_at=expires_at)
         db.session.add(new_otp)
         db.session.commit()
         
@@ -137,13 +138,13 @@ def resend_otp():
     if user:
         otp_class = otp.query.filter_by(user_id=user.id).order_by(otp.expires_at.desc()).first()
         if otp_class:
-            if otp_class.sent_at > datetime.utcnow() + timedelta(minutes=1):
+            if otp_class.sent_at > time() + 60:
                 return redirect(url_for('auth.otp_route'))
             db.session.delete(otp_class)
             db.session.commit()
             otp_code = generate_otp()
-            expires_at = datetime.utcnow() + timedelta(minutes=10)
-            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=datetime.utcnow(), expires_at=expires_at)
+            expires_at = time() + 600
+            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=time(), expires_at=expires_at)
             db.session.add(new_otp)
             db.session.commit()
             
@@ -175,8 +176,8 @@ def reset_password():
             user.email_verified = False
             db.session.commit()
             otp_code = generate_otp()
-            expires_at = datetime.utcnow() + timedelta(minutes=10)
-            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=datetime.utcnow(), expires_at=expires_at)
+            expires_at = time() + 600
+            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=time(), expires_at=expires_at)
             db.session.add(new_otp)
             db.session.commit()
             

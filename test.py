@@ -1,7 +1,11 @@
-import sys
+import databases, inspect
 
-if len(sys.argv) > 1:
-    if sys.argv[1] == 'test':
-        print("Running tests...")
-else:
-    print('not riunning tests')
+module_name = databases.__name__
+
+defined_classes = [
+    obj for name, obj in inspect.getmembers(databases, inspect.isclass)
+    if obj.__module__ == module_name
+]
+
+print(f"Classes defined in '{module_name}':")
+print(defined_classes)

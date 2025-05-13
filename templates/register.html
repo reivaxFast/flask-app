@@ -9,7 +9,7 @@
     <div id="signIn">
         <h1 id="Title" class="Title">Register</h1>
         <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
-        <form action="{{ url_for('register') }}" method="post">
+        <form action="{{ url_for('auth.register') }}" method="post">
             <p id='error' class='error' style="display: {{ 'block' if problem == 'email' else 'none'}}">{{ error }}</p>
             <input type="email" class="input" name="email" id="SignInEmail" placeholder="Email" required>
             <p id='error' class='error' style="display: {{ 'block' if problem == 'username' else 'none'}}">{{ error }}</p>
@@ -28,7 +28,7 @@
             </div>
             <input type="submit" value="Register" class="button" id="SignInButton" onclick="">
         </form>
-        <a href="{{ url_for('login') }}" id="SignLink" class="link">Login</a>
+        <a href="{{ url_for('auth.login') }}" id="SignLink" class="link">Login</a>
     </div>
     <script src="{{ url_for('static', filename='js/signUp.js') }}"></script>
 {% endblock %}
