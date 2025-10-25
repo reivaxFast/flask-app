@@ -1,5 +1,8 @@
+from email.policy import default
+from socketserver import DatagramRequestHandler
 from flask_sqlalchemy import SQLAlchemy
 from time import time
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
 
@@ -149,8 +152,7 @@ class otp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     otp_code = db.Column(db.String(6), nullable=False)
-    sent_at = db.Column(db.DateTime, default=time())
     expires_at = db.Column(db.DateTime, nullable=False)
 
     def is_valid(self):
-        return time() < self.expires_at
+        return datetime.now() < self.expires_at

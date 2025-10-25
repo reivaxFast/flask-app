@@ -2,6 +2,7 @@ from email import errors
 from flask import render_template, request, redirect, url_for, session, Blueprint
 from flask_mail import Message
 from time import time
+from datetime import date, timedelta, datetime
 from datetime import datetime
 import re
 from databases import User, otp  # Assuming models are in the same directory or a subdirectory
@@ -11,6 +12,26 @@ import secrets
 import string
 
 auth_bp = Blueprint('auth', __name__)
+
+def send_otp(email):
+    user = User.query.filter_by(email=email).first()
+    otp_code = generate_otp()
+    new_otp = otp(user_id=user.id, expires_at=datetime.now()+timedelta(minutes=10), otp_code=otp_code) # type: ignore
+    db.session.add(new_otp)
+    db.session.commit()
+    
+    subject = 'confirm your email'
+    body = f'Your OTP for email confirmatoin is {otp_code}, valid for 10 minutes.'
+    
+    msg = Message(subject, recipients=[email])
+    msg.body = body
+    
+    try:
+        mail.send(msg)
+        
+    except Exception as e:
+        print(e)
+        print(f'otp: {otp_code}')
 
 def generate_otp(length=6):
     alphabet = string.ascii_uppercase + string.digits
@@ -31,6 +52,7 @@ def home():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        #checking inputs
         email = request.form['email']
         username = request.form['username']
         password = request.form['password1']
@@ -63,6 +85,9 @@ def register():
             errors['password'] = "Password must contain a special character"
         if errors:
             return render_template('register.html', errors=errors)
+        
+        #if all inputs are valid, create user
+        
         dob_string = request.form['DOB']
         dob_object = None
         if dob_string:
@@ -71,30 +96,13 @@ def register():
             except ValueError:
                 return render_template('register.html', error="Invalid date format", problem='dob')
         hashed_password = generate_password_hash(password)
-        new_user = User(email=email, DOB = dob_object, username=username, password_hash=hashed_password, email_verified=False)
+        new_user = User(email=email, DOB = dob_object, username=username, password_hash=hashed_password, email_verified=False) # type: ignore
         session['email'] = email
         db.session.add(new_user)
         db.session.commit()
         
-        user = User.query.filter_by(email=email).first()
-        otp_code = generate_otp()
-        expires_at = time() + 600
-        new_otp = otp(user_id=user.id, otp_code=otp_code, expires_at=expires_at)
-        db.session.add(new_otp)
-        db.session.commit()
+        send_otp(email)
         
-        subject = 'confirm your email'
-        body = f'Your OTP for email confirmatoin is {otp_code}, valid for 10 minutes.'
-        
-        msg = Message(subject, recipients=[email])
-        msg.body = body
-        
-        try:
-            mail.send(msg)
-            
-        except Exception as e:
-            print(e)
-            print(f'otp: {otp_code}')
         return redirect(url_for('auth.otp_route'))
         
     return render_template('register.html', errors={})
@@ -122,7 +130,6 @@ def otp_route():
         if user:
             otp_class = otp.query.filter_by(user_id=user.id).order_by(otp.expires_at.desc()).first()
             if otp_class and otp_class.is_valid():
-                
                 otp1 = request.form['otp1']
                 otp2 = request.form['otp2']
                 otp3 = request.form['otp3'] 
@@ -141,7 +148,7 @@ def otp_route():
                     return render_template('otp.html', error="Invalid OTP", email=email)
             else:
                 return render_template('otp.html', error="OTP expired", email=email)
-                        
+    
     return render_template('otp.html')
 
 @auth_bp.route('/resend_otp', methods=['POST'])
@@ -151,27 +158,13 @@ def resend_otp():
     if user:
         otp_class = otp.query.filter_by(user_id=user.id).order_by(otp.expires_at.desc()).first()
         if otp_class:
-            if otp_class.sent_at > time() + 60:
+            if otp_class.expires_at + timedelta(minutes=-9) > datetime.now():
                 return redirect(url_for('auth.otp_route'))
             db.session.delete(otp_class)
             db.session.commit()
-            otp_code = generate_otp()
-            expires_at = time() + 600
-            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=time(), expires_at=expires_at)
-            db.session.add(new_otp)
-            db.session.commit()
             
-            subject = 'confirm your email'
-            body = f'Your OTP for email confirmatoin is {otp_code}, valid for 10 minutes.'
+            send_otp(email)
             
-            msg = Message(subject, recipients=[email])
-            msg.body = body
-            
-        try:
-            mail.send(msg)
-        except Exception as e:
-            print(e)
-            print(f'otp: {otp_code}')
     return redirect(url_for('auth.otp_route'))
 
 @auth_bp.route('/reset_password', methods=['GET', 'POST'])
@@ -190,7 +183,7 @@ def reset_password():
             db.session.commit()
             otp_code = generate_otp()
             expires_at = time() + 600
-            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=time(), expires_at=expires_at)
+            new_otp = otp(user_id=user.id, otp_code=otp_code, sent_at=time(), expires_at=expires_at) # type: ignore
             db.session.add(new_otp)
             db.session.commit()
             
