@@ -1,3 +1,4 @@
+from email import errors
 from flask import render_template, request, redirect, url_for, session, Blueprint
 from flask_mail import Message
 from time import time
@@ -34,24 +35,34 @@ def register():
         username = request.form['username']
         password = request.form['password1']
         password2 = request.form['password2']
+        errors = {}
         if password != password2:
-            return render_template('register.html', error="Passwords do not match", problem='password')
+            errors['password'] = "Passwords do not match"
         if User.query.filter_by(email=email).first():
-            return render_template('register.html', error="Email already exists", problem='email')
+            errors['email'] = "Email already exists"
         if not email or not username or not password:
-            return render_template('register.html', error="All fields are required", problem='email' if not email else 'username' if not username else 'password')
+            if not email:
+                errors['email'] = "Email is required"
+            if not username:
+                errors['username'] = "Username is required"
+            if not password:
+                errors['password'] = "Password is required"
+            if not password2:
+                errors['password'] = "Password confirmation is required"
         if len(username) < 3 or len(username) > 20:
-            return render_template('register.html', error="Username must be between 3 and 20 characters", problem='username')
+            errors['username'] = "Username must be between 3 and 20 characters"
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            return render_template('register.html', error="Invalid email format", problem='email')
+            errors['email'] = "Invalid email format"
         if len(password) < 8:
-            return render_template('register.html', error="Password must minimum 8 characters long", problem='password')
+            errors['password'] = "Password must minimum 8 characters long"
         if not any(char.isdigit() for char in password):
-            return render_template('register.html', error="Password must contain a digit", problem='password')
+            errors['password'] = "Password must contain a digit"
         if not any(char.isalpha() for char in password):
-            return render_template('register.html', error="Password must contain a letter", problem='password')
+            errors['password'] = "Password must contain a letter"
         if not any(char in "!@#$%^&*()-_+=<>?/|{}[]:;'" for char in password):
-            return render_template('register.html', error="Password must contain a special character", problem='password')
+            errors['password'] = "Password must contain a special character"
+        if errors:
+            return render_template('register.html', errors=errors)
         dob_string = request.form['DOB']
         dob_object = None
         if dob_string:
@@ -86,7 +97,7 @@ def register():
             print(f'otp: {otp_code}')
         return redirect(url_for('auth.otp_route'))
         
-    return render_template('register.html', error=None, problem = None)
+    return render_template('register.html', errors={})
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -98,7 +109,9 @@ def login():
             session['email'] = user.email
             return redirect(url_for('auth.home'))
         else:
-            return "Invalid credentials"
+            if user and not user.check_password(password):
+                return render_template('login.html', error="Incorrect password")
+            return render_template('login.html', error="Email not found")
     return render_template('login.html')
 
 @auth_bp.route('/otp', methods=['GET', 'POST'])

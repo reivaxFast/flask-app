@@ -153,4 +153,4 @@ class otp(db.Model):
     expires_at = db.Column(db.DateTime, nullable=False)
 
     def is_valid(self):
-        return time()() < self.expires_at
+        return time() < self.expires_at

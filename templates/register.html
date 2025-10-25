@@ -10,14 +10,14 @@
         <h1 id="Title" class="Title">Register</h1>
         <h2 id="Subtitle" class="Subtitle">Register to unlock organisation freedom</h2>
         <form action="{{ url_for('auth.register') }}" method="post">
-            <p id='error' class='error' style="display: {{ 'block' if problem == 'email' else 'none'}}">{{ error }}</p>
+            <p id='error' class='error' style="display: {{ 'block' if 'email' in errors else 'none'}}">{{ errors.get('email', 'you shouldnt see this') }}</p>
             <input type="email" class="input" name="email" id="SignInEmail" placeholder="Email" required>
-            <p id='error' class='error' style="display: {{ 'block' if problem == 'username' else 'none'}}">{{ error }}</p>
+            <p id='error' class='error' style="display: {{ 'block' if 'username' in errors else 'none'}}">{{ errors.get('username', 'you shouldnt see this') }}</p>
             <input type="text" class="input" name="username" id="SignInUsername" placeholder="Username" required>
-            <p id='error' class='error' style="display: {{ 'block' if problem == 'dob' else 'none'}}">{{ error }}</p>
+            <p id='error' class='error' style="display: {{ 'block' if 'dob' in errors else 'none'}}">{{ errors.get('username', 'you shouldnt see this') }}</p>
             <small>Date of Birth (for birthday reminders):</small>
             <input type="date" class="input" name="DOB" id="SignInDOB" placeholder="Date of Birth (for birthday reminders)" required>
-            <p id='error' class='error' style="display: {{ 'block' if problem == 'password' else 'none'}}">{{ error }}</p>
+            <p id='error' class='error' style="display: {{ 'block' if 'password' in errors else 'none'}}">{{ errors.get('password', 'you shouldnt see this') }}</p>
             <div class="password-container">
                 <input type="password" class="password" name="password1" id="password1" placeholder="Password" required>
                 <i class="fa-regular fa-eye fa-lg eye-icon" id="eye-password1"></i>

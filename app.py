@@ -1,5 +1,5 @@
 import sys, inspect
-from builtins import *
+from builtins import Exception
 from flask import Flask
 from flask_migrate import Migrate
 from extensions import db, mail  # Import from extensions
@@ -71,4 +71,4 @@ if __name__ == '__main__':
             case 'run':
                 app.run(debug=True)
     except:
-        raise Exception("Must provide a command: 'run' to run the app or 'clear' to clear the database.")
+        app.run(debug=True)
